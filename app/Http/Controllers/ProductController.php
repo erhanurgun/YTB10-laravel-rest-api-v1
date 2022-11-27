@@ -20,14 +20,41 @@ class ProductController extends Controller
     }
 
     /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
+     * @OA\Get(
+     *     path="/api/products",
+     *     summary="Get list of products",
+     *     tags={"Products"},
+     *     description="Returns list of products",
+     *     operationId="index",
+     *     @OA\Parameter(
+     *          name="perPage",
+     *          in="query",
+     *          description="Per page count",
+     *          required=false,
+     *          explode=false,
+     *          @OA\Schema(
+     *               default=10,
+     *               type="integer"
+     *          )
+     *     ),
+     *     @OA\Response(
+     *          response=200,
+     *          description="successful operation",
+     *     ),
+     *     @OA\Response(
+     *          response=404,
+     *          description="Not found",
+     *     ),
+     *     @OA\Response(
+     *          response=500,
+     *          description="Internal Server Error",
+     *     )
+     * )
      */
     public function index(): JsonResponse
     {
         try {
-            return $this->responseSuccess($this->productRepository->getAll(), 'Ürünler başarıyla listelendi.');
+            return $this->responseSuccess($this->productRepository->getAll(request()->perPage), 'Ürünler başarıyla listelendi.');
         } catch (Exception $e) {
             return $this->responseError([], $e->getMessage());
         }
